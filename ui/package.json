@@ -10,6 +10,6 @@
     "live-server": "^1.2.1"
   },
   "devDependencies": {
-    "prettier": "^2.0.2",
+    "prettier": "^2.0.2"
   }
 }

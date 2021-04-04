@@ -564,20 +564,21 @@
           }
         );
 
-        utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(
-          method
-        ) {
-          /*eslint func-names:0*/
-          Axios.prototype[method] = function (url, data, config) {
-            return this.request(
-              utils.merge(config || {}, {
-                method: method,
-                url: url,
-                data: data
-              })
-            );
-          };
-        });
+        utils.forEach(
+          ['post', 'put', 'patch'],
+          function forEachMethodWithData(method) {
+            /*eslint func-names:0*/
+            Axios.prototype[method] = function (url, data, config) {
+              return this.request(
+                utils.merge(config || {}, {
+                  method: method,
+                  url: url,
+                  data: data
+                })
+              );
+            };
+          }
+        );
 
         module.exports = Axios;
 
@@ -688,17 +689,19 @@
           }
         };
 
-        utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(
-          method
-        ) {
-          defaults.headers[method] = {};
-        });
+        utils.forEach(
+          ['delete', 'get', 'head'],
+          function forEachMethodNoData(method) {
+            defaults.headers[method] = {};
+          }
+        );
 
-        utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(
-          method
-        ) {
-          defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
-        });
+        utils.forEach(
+          ['post', 'put', 'patch'],
+          function forEachMethodWithData(method) {
+            defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+          }
+        );
 
         module.exports = defaults;
 
@@ -878,21 +881,21 @@
 
             // Add headers to the request
             if ('setRequestHeader' in request) {
-              utils.forEach(requestHeaders, function setRequestHeader(
-                val,
-                key
-              ) {
-                if (
-                  typeof requestData === 'undefined' &&
-                  key.toLowerCase() === 'content-type'
-                ) {
-                  // Remove Content-Type if data is undefined
-                  delete requestHeaders[key];
-                } else {
-                  // Otherwise add header to the request
-                  request.setRequestHeader(key, val);
+              utils.forEach(
+                requestHeaders,
+                function setRequestHeader(val, key) {
+                  if (
+                    typeof requestData === 'undefined' &&
+                    key.toLowerCase() === 'content-type'
+                  ) {
+                    // Remove Content-Type if data is undefined
+                    delete requestHeaders[key];
+                  } else {
+                    // Otherwise add header to the request
+                    request.setRequestHeader(key, val);
+                  }
                 }
-              });
+              );
             }
 
             // Add withCredentials to request if needed

@@ -1,11 +1,13 @@
 function countDistinctSymbols(text) {
   let counter = Array(256).fill(0);
 
-  for (let i=0; i< text.length; i++) {
+  for (let i = 0; i < text.length; i++) {
     counter[text[i].charCodeAt(0)]++;
   }
 
-  return counter.map((el,index) => {return {symbol: String.fromCharCode(index), count: el}});
+  return counter.map((el, index) => {
+    return { symbol: String.fromCharCode(index), count: el };
+  });
 }
 
 function formatBytes(bytes, decimals = 2) {
@@ -38,11 +40,19 @@ new Vue({
         const symbols = countDistinctSymbols(data);
         // console.log(symbols);
         const usedSymbols = 256 - symbols.filter(el => el.count === 0).length;
-        console.log(`Initial size using ASCII: ${formatBytes(data.length * 8, 0) }`);
-        console.log(`First compression using fixed codes on ${(usedSymbols).toString(2).length - 1} bits`);
-        console.log(`Size using fixed codes:  ${formatBytes(data.length * 4, 0) }`);
+        console.log(
+          `Initial size using ASCII: ${formatBytes(data.length * 8, 0)}`
+        );
+        console.log(
+          `First compression using fixed codes on ${
+            usedSymbols.toString(2).length - 1
+          } bits`
+        );
+        console.log(
+          `Size using fixed codes:  ${formatBytes(data.length * 4, 0)}`
+        );
         const alphabet = symbols.filter(el => el.count > 0);
-        console.log(alphabet.sort((a, b)=>b.count - a.count));//descending sort
+        console.log(alphabet.sort((a, b) => b.count - a.count)); //descending sort
         this.text = data;
       } catch (err) {
         console.error(err);
@@ -55,15 +65,14 @@ new Vue({
       // binary[0] = 3;
       // binary[1] = 7;
       axios
-          .post(url, this.text, {
-            headers: {
-              'Content-Type': 'text/html',
-            }
-          })
-          .then(response => {
-            console.log(response.data);
-          });
-
+        .post(url, this.text, {
+          headers: {
+            'Content-Type': 'text/html'
+          }
+        })
+        .then(response => {
+          console.log(response.data);
+        });
     }
   }
 });

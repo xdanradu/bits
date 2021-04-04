@@ -11097,10 +11097,10 @@
     return !!(
       node.pre ||
       (!node.hasBindings && // no dynamic bindings
-      !node.if &&
-      !node.for && // not v-if or v-for or v-else
-      !isBuiltInTag(node.tag) && // not a built-in
-      isPlatformReservedTag(node.tag) && // not a component
+        !node.if &&
+        !node.for && // not v-if or v-for or v-else
+        !isBuiltInTag(node.tag) && // not a built-in
+        isPlatformReservedTag(node.tag) && // not a component
         !isDirectChildOfTemplateFor(node) &&
         Object.keys(node).every(isStaticKey))
     );
