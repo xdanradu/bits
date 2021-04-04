@@ -1,0 +1,18 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "nodemon index.js",
+    "prettier": "prettier --config ./.prettierrc --list-different \"**/*{.html,.js,.json,.css}\" --write"
+  },
+  "dependencies": {
+    "body-parser": "^1.12.2",
+    "cors": "^2.8.5",
+    "express": "3.x",
+
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3",
+    "prettier": "^2.0.2",
+  }
+}
