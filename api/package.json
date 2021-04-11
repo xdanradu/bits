@@ -6,7 +6,8 @@
     "prettier": "prettier --config ./.prettierrc --list-different \"**/*{.html,.js,.json,.css}\" --write"
   },
   "dependencies": {
-    "bits-utils": "^1.0.8",
+    "binary-parser": "^1.7.0",
+    "bits-utils": "^1.1.1",
     "body-parser": "^1.12.2",
     "cors": "^2.8.5",
     "express": "3.x"
