@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "binary-parser": "^1.7.0",
-    "bits-utils": "^1.1.1",
+    "bits-utils": "^2.0.0",
     "body-parser": "^1.12.2",
     "cors": "^2.8.5",
     "express": "3.x"

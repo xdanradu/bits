@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <HelloWorld msg="Bits Compression"/>
+    <HelloWorld msg="Compression"/>
   </div>
 </template>
 

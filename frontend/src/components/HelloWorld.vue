@@ -1,8 +1,8 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <button v-on:click="sendUncompressed()">Send book uncompressed</button>
-    <button v-on:click="sendCompressed()">Send book compressed</button>
+    <h1>{{ msg }} <span v-if="compressionRate">{{ compressionRate }}%</span></h1>
+    <button v-on:click="sendUncompressed()">Send uncompressed text</button>
+    <button v-on:click="sendCompressed()">Send compressed text</button>
   </div>
 </template>
 
@@ -14,6 +14,13 @@ export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  data() {
+    return {
+      uncompressedSize: 0,
+      compressedSize: 0,
+      compressionRate: 0
+    }
   },
   created() {
     this.loadFileAndPrintToConsole('http://127.0.0.1:8081/test-data.txt');//run http-server -o --cors in resources before
@@ -31,6 +38,9 @@ export default {
     },
     sendUncompressed: function() {
       let url = 'http://localhost:3000/uncompressed';
+      this.uncompressedSize = this.text.length;
+      this.setCompressionRate(this.compressedSize, this.uncompressedSize);
+      console.log(bitsUtils.getSize(this.uncompressedSize));
       axios
           .post(url, this.text, {
             headers: {
@@ -46,13 +56,22 @@ export default {
       const compressed = bitsUtils.compressUsingFixedCodes(this.text);
       const t1 = performance.now();
       console.log("Compression took " + parseFloat(((t1 - t0)/1000)).toFixed(2) + " seconds.");
-      this.sendMetadata(compressed.binaryData, {
-        codes: compressed.codes,
+
+      const metadata = {
+        codes: JSON.stringify(Array.from(compressed.codes.entries())),
         numberOf8BitChunks: compressed.numberOf8BitChunks,
         codeLengthInBits: compressed.codeLengthInBits,
         totalBits: compressed.totalBits,
         dataBits: compressed.dataBits,
-        unusedBits: compressed.unusedBits  });
+        unusedBits: compressed.unusedBits  }
+
+      this.compressedSize = compressed.numberOf8BitChunks + JSON.stringify(metadata).length;
+      console.log(`Metadata size: ${bitsUtils.getSize(JSON.stringify(metadata).length)}`);
+      console.log(`Binary data: ${bitsUtils.getSize(compressed.numberOf8BitChunks)}`);
+      console.log(`Compressed data size: ${bitsUtils.getSize(this.compressedSize)}`);
+      this.setCompressionRate(this.compressedSize, this.uncompressedSize);
+
+      this.sendMetadata(compressed.binaryData, metadata);
     },
     sendMetadata: function(binaryData, metadata) {
       let url = 'http://localhost:3000/compressed-metadata';
@@ -78,6 +97,9 @@ export default {
           .then(response => {
             console.log(response.data);
           });
+    },
+    setCompressionRate(a, b) {
+      if (a && b) { this.compressionRate = parseFloat((1-a/b)*100).toFixed(2);}
     }
   }
 
@@ -89,5 +111,14 @@ export default {
 <style scoped>
 h1 {
   color: deepskyblue;
+}
+
+button {
+  padding:10px;
+  margin:10px;
+}
+
+button:hover {
+  cursor: pointer;
 }
 </style>

@@ -1,0 +1,11 @@
+{
+  "name": "resources",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "http-server -o --cors"
+  },
+  "author": "",
+  "license": "ISC"
+}

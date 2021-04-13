@@ -33,16 +33,23 @@ app.post('/uncompressed', function (request, response) {
 });
 
 let metadata = null;
-let metadataSize = '';
+let metadataSizeInBytes = '';
 app.post('/compressed-metadata', function (request, response) {
   const payloadSize = request.get("content-length");
-  metadataSize = payloadSize;
-  metadata = JSON.parse(request.rawBody);
+  metadataSizeInBytes = payloadSize;
+  const temp = JSON.parse(request.rawBody);
+
+  metadata = {codes: new Map(JSON.parse(temp.codes)),
+    numberOf8BitChunks: temp.numberOf8BitChunks,
+    codeLengthInBits: temp.codeLengthInBits,
+    totalBits: temp.totalBits,
+    dataBits: temp.dataBits,
+    unusedBits: temp.unusedBits }
   response.json({ status: `Received ${bitsUtils.getSize(payloadSize, 2)} metadata` });
 });
 
 app.post('/compressed-data', function (request, response) {
-  const payloadSize = request.get("content-length");
+  const payloadSizeInBytes = request.get("content-length");
   let buf = Buffer.from(request.rawBody, 'binary');
   const parser = new Parser()
       .array("data", {
@@ -51,13 +58,14 @@ app.post('/compressed-data', function (request, response) {
       });
 
   const compressed = {binaryData: parser.parse(buf).data, ...metadata};
-  console.time('decompression')
+  console.time('decompression');
   const uncompressed = bitsUtils.decompress(compressed);
   console.timeEnd('decompression')
   // fs.writeFileSync('binary-data.txt', request.rawBody);
   fs.writeFileSync('original-data.txt', uncompressed);
-  console.log (`Data: ${bitsUtils.getSize(payloadSize)} + Metadata: ${bitsUtils.getSize(metadataSize)}` );
-  response.json({ status: `Received ${bitsUtils.getSize(payloadSize, 2)} binary data` });
+  console.log (`ASCII data size: ${bitsUtils.getSize(uncompressed.length)}` );
+  console.log (`Data: ${bitsUtils.getSize(payloadSizeInBytes)} + Metadata: ${bitsUtils.getSize(metadataSizeInBytes)}` );
+  response.json({ status: `Received ${bitsUtils.getSize(payloadSizeInBytes, 2)} binary data` });
 });
 
 app.listen(3000, function () {
